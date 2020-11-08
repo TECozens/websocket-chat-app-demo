@@ -1,0 +1,11 @@
+.Logo {
+    transform: scale(0.8);
+    height: 100px;
+    width: 100px;
+    padding: 5px;
+    margin: none;
+}
+
+.Toolbar {
+    margin-bottom: 146px;
+}
