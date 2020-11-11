@@ -2,7 +2,7 @@ import React from 'react'
 import {Navbar} from 'react-bootstrap'
 import {ReactComponent as ReactLogo} from '../../../assets/cu-logo.svg'
 import './Toolbar.css';
-const Toolbar = () => {
+const toolbar = (props) => {
     return (
         <div className="Toolbar">
             <Navbar fixed="top" bg="dark" variant="dark">
@@ -21,7 +21,7 @@ const Toolbar = () => {
                 
 
                 <Navbar.Text>
-                    Username
+                <p>{props.userId}</p>
                 </Navbar.Text>
 
                 </Navbar.Collapse>
@@ -30,4 +30,4 @@ const Toolbar = () => {
     )
 }
 
-export default Toolbar
+export default toolbar
