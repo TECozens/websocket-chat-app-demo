@@ -1,37 +1,32 @@
 import React, {useState, useEffect, useRef} from 'react'
 import {Button, Form, Jumbotron, Row, ListGroup,} from 'react-bootstrap'
-import io from 'socket.io-client';
-
-const ENDPOINT = "http://localhost:3001"
-const socket = io.connect(ENDPOINT)
+import { initiateSocket, disconnectSocket, subscribeToChat, sendMessage } from '../../Socket/socketHelper';
+import {Scrollbars} from "react-custom-scrollbars";
+import './Room.css'
 
 const Room = (props) => {
-    const messageRef = useRef()
-    const username = props.username
-    const room = props.currentRoom
-    socket.emit('joinRoom', ({username, room}));
+    const [chat, setChat] = useState([]);
     const [messages, setMessages] = useState([])
     const [message, setMessage] = useState("")
-    const [messageCount, setMessageCount] = useState(0);
 
-    //When it loads, listening for messages
+    const username = props.username
+    const room = props.currentRoom
+
+
+
+
     useEffect(() => {
-        console.log("Message Count", messageCount)
+        if (room) initiateSocket(username,room);
 
-        //listen for other Messages
-        socket.on('message', (data) => {
-            console.log("Message", data)
-            setMessageCount(messageCount + 1);
-        })
+        subscribeToChat((err, data) => {
+            if(err) return;
+            setChat(oldChats =>[data, ...oldChats])
+        });
 
-
-        socket.on('message', (data) => {
-            //Do something with data
-            console.log("New message",data)
-            getMessages(data);
-        })
-
-    },[setMessageCount])
+        return () => {
+            disconnectSocket();
+        }
+    }, [room]);
 
     function getMessages(data) {
         setMessages(messages => [...messages, data])
@@ -46,9 +41,21 @@ const Room = (props) => {
     }
 
 
-    function sendMessage() {
-        const message = messageRef.current.value
-        socket.emit('message', message)
+    const handleKeyPress = (event) => {
+
+        if(event.key === 'Enter'){
+            handleSend()
+        }
+
+    }
+
+    const handleSend = () => {
+        if(message === '') {
+            alert("Type Something")
+        } else {
+            sendMessage(room, message)
+            setMessage('')
+        }
     }
 
     return (
@@ -56,14 +63,42 @@ const Room = (props) => {
             <Jumbotron>
                 <h1>Current Room: {room}</h1>
                 <h2>Your ID:{username}</h2>
-                <ListGroup variant="flush">
 
-                </ListGroup>
-                <Row>
-                    <Form.Control type="text" ref={messageRef}/>
-                    <Button onClick={sendMessage} variant="outline-primary" block>Send</Button>
-                </Row>
+                <h1>Live Chat:</h1>
+                <div className="messages-container">
+                        <Scrollbars style={{height: 300}}>
+                        <ListGroup variant="flush" >
+                            {chat.map((m ,i) => {
+                                if(m.includes(username)) {
+                                    return (
+                                        <ListGroup.Item className="message-item my-message" key={i}>
+                                            <Form.Label>
+                                                {m}
+                                            </Form.Label>
+                                        </ListGroup.Item>
+                                    )
+                                } else {
+                                    return (
+                                        <ListGroup.Item className="message-item received-message" key={i}>
+                                            <Form.Label>
+                                                {m}
+                                            </Form.Label>
+                                        </ListGroup.Item>
+                                    )
+                                }
+                            }).reverse()}
+                        </ListGroup>
+                        </Scrollbars>
+                </div>
 
+
+                <Form.Control placeholder="Type a message" type="text" name="name" value={message}
+                       onChange={e => setMessage(e.target.value)}
+                       onKeyPress={handleKeyPress}
+
+                />
+
+                <Button onClick={handleSend} variant="dark" block>Send</Button>
 
             </Jumbotron>
         </div>

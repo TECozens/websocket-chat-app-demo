@@ -1,7 +1,6 @@
 import React from 'react'
 import {Navbar} from 'react-bootstrap'
 import {ReactComponent as ReactLogo} from '../../assets/cu-logo.svg'
-import Profile from '../../components/Profile/Profile';
 import './Toolbar.css';
 const toolbar = (props) => {
     return (
@@ -25,7 +24,6 @@ const toolbar = (props) => {
                 <div className="shadow medium"> 
                     Your Id: <span className="text-muted">{props.userId}</span>
                 </div>
-                <Profile />
                 </Navbar.Text>
 
                 </Navbar.Collapse>

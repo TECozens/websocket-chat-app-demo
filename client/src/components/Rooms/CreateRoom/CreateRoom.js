@@ -9,7 +9,7 @@ const CreateRoom = () => {
 
     const nameRef = useRef()
 
-    const newRoom = (e) => {
+    const newRoom = () => {
         const roomName = nameRef.current.value
 
         addRoom({

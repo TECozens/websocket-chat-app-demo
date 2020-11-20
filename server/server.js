@@ -36,10 +36,13 @@ io.on('connection', socket => {
     });
 
     // Listen for Message
-    socket.on('message', msg => {
+    socket.on('message', message => {
         const user = getCurrentUser(socket.id);
+
         console.log("New Message In: ", user.room)
-        socket.to(user.room).emit('message', formatMessage(user.username, msg));
+
+        socket.to(user.room).emit('message', formatMessage(user.username, message));
+        socket.emit('message', formatMessage(user.username, message));
     });
 
     // Runs when client disconnects
@@ -96,7 +99,6 @@ dbRouter.post('/addRoom', (request, results) => {
 
     //Ingredients for Recipe
     const {'room': room} = request.body;
-
 
     console.log("Room TEST",room)
 
