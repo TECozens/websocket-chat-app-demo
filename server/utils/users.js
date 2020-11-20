@@ -24,9 +24,7 @@ function userLeave(id) {
 
 // Get room users
 function getRoomUsers(room) {
-    let roster = users.filter(user => user.room === room);
-    console.log("Roster of Users", users)
-    return roster;
+    return users.filter(user => user.room === room);
 }
 
 
