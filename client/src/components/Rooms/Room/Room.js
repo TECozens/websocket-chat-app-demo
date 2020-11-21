@@ -49,14 +49,11 @@ const Room = (props) => {
 
     return (
         <div>
-            <Col>
-                <h1>Roster</h1>
-            </Col>
             <Jumbotron>
                 <Col>
-                    <h1>Current Room: {room}</h1>
-                    <h2>Your ID:{username}</h2>
-                    <h1>Live Chat:</h1>
+                    <h1>Room | {room}</h1>
+                    <h2>Your ID | {username}</h2>
+                    <h1>Chat</h1>
                     <div className="messages-container">
                         <Scrollbars style={{height: 300}}>
                             <ListGroup variant="flush" >
