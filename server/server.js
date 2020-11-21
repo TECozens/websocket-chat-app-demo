@@ -1,107 +1,81 @@
 const express = require('express')
 const app = require('express')();
 const cors = require('cors');
-const http = require('http').createServer(app);
 const bodyParser = require('body-parser');
-const io = require('socket.io')(http);
-
 app.use(cors());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
-
+const http = require('http').createServer(app);
+const io = require('socket.io')(http);
 const PORT = 3001;
 const formatMessage = require('./utils/messages');
 const {userJoin, userLeave, getRoomUsers, getCurrentUser} = require('./utils/users');
 
+http.listen(PORT, () => {console.log(`LISTENING ON PORT ${PORT}`);});
 // Run when client connects
 io.on('connection', socket => {
         socket.on('joinRoom', ({username, room}) => {
             console.log("Name of User", username)
             console.log("Name of Room", room)
 
-
             const user = userJoin(socket.id, username, room);
+
             console.log("Connected socket", user, "To Room", user.room)
+
             socket.join(user.room);
+            socket.emit('message', formatMessage(room,`Welcome to ${room}, ${username}`)); // Welcome current user
+            socket.to(user.room).emit('message', formatMessage(room, `${user.username} has joined the chat`)); // sending to all clients in room except sender
 
+            console.log("Before Roster", room)
 
-            // Welcome current user
-            socket.emit('message', formatMessage(room,`Welcome to ${room}, ${username}`));
-
-            // sending to all clients in room except sender
-            socket.to(user.room).emit('message', formatMessage(room, `${user.username} has joined the chat`));
+            const data = getRoomUsers(room)
+            let inout;
 
             // Send users and room info
-            socket.to(user.room).emit('roster', {room: user.room, users: getRoomUsers(room)});
-    });
+            socket.to(user.room).emit('roomUsers', {
+                users: getRoomUsers(user.room)
+            });
 
-    // Listen for Message
-    socket.on('message', msg => {
-        const user = getCurrentUser(socket.id);
-        console.log("New Message In: ", user.room)
-        socket.to(user.room).emit('message', formatMessage(user.username, msg));
-    });
+        });
 
-    // Runs when client disconnects
-    socket.on('disconnect', () => {
-        const user = userLeave(socket.id);
-        console.log("Disconnected Socket of", user)
-        if (user) {
-                socket
-                    .to(user.room)
-                    .emit(
-                    'message',
-                    formatMessage(user.room, `${user.username} has left the chat`)
-                    );
+        // Listen for Message
+        socket.on('message', message => {
+            const user = getCurrentUser(socket.id);
+            console.log("New Message In: ", user.room)
+            socket.to(user.room).emit('message', formatMessage(user.username, message));
+            socket.emit('message', formatMessage(user.username, message));
+        });
 
+        // Runs when client disconnects
+        socket.on('disconnect', () => {
+            const user = userLeave(socket.id);
+            console.log("Disconnected Socket of", user)
+            if (user) {
+                socket.to(user.room).emit('message', formatMessage(user.room, `${user.username} has left the chat`));
+                const data = getRoomUsers(user.room)
+                let inout;
+                socket.to(user.room).emit('roster', {data, inout});
                 // Send users and room info
-                socket
-                    .to(user.room)
-                    .emit(
-                    'roomUsers', {
-                        room: user.room,
-                        users: getRoomUsers(user.room)
-                    });
-
-                socket
-                    .leave(user.room)
-        }
-    });
+                socket.leave(user.room)
+            }
+        });
 });
 
-http.listen(PORT, () => {
-    console.log(`LISTENING ON PORT ${PORT}`)
-});
-
-
-// NOTE Mongo
-const mongoose = require('mongoose');
+const mongoose = require('mongoose');// NOTE Mongo
 const roomSchema = require('./models/roomSchema');
 
 // REVIEW Don't Hardcode it use process.env
 const CONNECTOR = 'mongodb+srv://admin:admin@rockpaperscissors.jerib.mongodb.net/rockpaperscissors?retryWrites=true&w=majority'
 mongoose.connect(CONNECTOR,{ useNewUrlParser: true });
 let db = mongoose.connection;
-
-// NOTE Handle Db Connection
-db.once('open', () => console.log('connected to the database'));
+db.once('open', () => console.log('connected to the database'));// NOTE Handle Db Connection
 db.on('error', console.error.bind(console, 'MongoDB connection error:'));
-
-// NOTE Router to handle route requests from dbService
-const dbRouter = express.Router();
+const dbRouter = express.Router();// NOTE Router to handle route requests from dbService
 app.use('/rockpaperscissor', dbRouter);
 
 dbRouter.post('/addRoom', (request, results) => {
-    //Recipe I want
-
-    //Ingredients for Recipe
-    const {'room': room} = request.body;
-
-
-    console.log("Room TEST",room)
-
-    const newRoom = new roomSchema({room});
-
+    const {'room': room} = request.body;    //Ingredients for Recipe
+    const newRoom = new roomSchema({room});    //Recipe I want
     //Store Cooked Recipe
     newRoom.save((err) => {
         if (err) {

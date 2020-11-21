@@ -1,70 +1,94 @@
-import React, {useState, useEffect, useRef} from 'react'
-import {Button, Form, Jumbotron, Row, ListGroup,} from 'react-bootstrap'
-import io from 'socket.io-client';
-
-const ENDPOINT = "http://localhost:3001"
-const socket = io.connect(ENDPOINT)
+import React, {useState, useEffect} from 'react'
+import {Button, Form, Jumbotron, ListGroup, Col,} from 'react-bootstrap'
+import { initiateSocket, disconnectSocket, subscribeToChat, sendMessage, getRoomUsers } from '../../Socket/socketHelper';
+import {Scrollbars} from "react-custom-scrollbars";
+import './Room.css'
+import sound from '../../../assets/sound.mp3'
+import useSound from 'use-sound'
 
 const Room = (props) => {
-    const messageRef = useRef()
+    const [chat, setChat] = useState([]);
+    const [message, setMessage] = useState("")
+    const [play] = useSound(sound);
     const username = props.username
     const room = props.currentRoom
-    socket.emit('joinRoom', ({username, room}));
-    const [messages, setMessages] = useState([])
-    const [message, setMessage] = useState("")
-    const [messageCount, setMessageCount] = useState(0);
 
-    //When it loads, listening for messages
     useEffect(() => {
-        console.log("Message Count", messageCount)
 
-        //listen for other Messages
-        socket.on('message', (data) => {
-            console.log("Message", data)
-            setMessageCount(messageCount + 1);
-        })
+        if (room) {
+            initiateSocket(username, room);
+        }
 
+        subscribeToChat((err, data) => {
+            if(err) return;
+            play.apply(()=> play())
+            setChat(oldChats =>[data, ...oldChats])
+        });
 
-        socket.on('message', (data) => {
-            //Do something with data
-            console.log("New message",data)
-            getMessages(data);
-        })
+        return () => {
+            disconnectSocket();
+        }
+    }, [room, play]);
 
-    },[setMessageCount])
+    const handleKeyPress = (event) => {
 
-    function getMessages(data) {
-        setMessages(messages => [...messages, data])
+        if(event.key === 'Enter'){
+            handleSend()
+        }
+
     }
 
-    function outputRoster(room, users) {
-        const userList = users.map(user => {
-            console.log("Added to Roster", user.username)
-            return user.username
-        })
-        console.log("roster", userList)
-    }
-
-
-    function sendMessage() {
-        const message = messageRef.current.value
-        socket.emit('message', message)
+    const handleSend = () => {
+        if(message === '') {
+            alert("Type Something")
+        } else {
+            sendMessage(room, message)
+            setMessage('')
+        }
     }
 
     return (
         <div>
+            <Col>
+                <h1>Roster</h1>
+            </Col>
             <Jumbotron>
-                <h1>Current Room: {room}</h1>
-                <h2>Your ID:{username}</h2>
-                <ListGroup variant="flush">
-
-                </ListGroup>
-                <Row>
-                    <Form.Control type="text" ref={messageRef}/>
-                    <Button onClick={sendMessage} variant="outline-primary" block>Send</Button>
-                </Row>
-
-
+                <Col>
+                    <h1>Current Room: {room}</h1>
+                    <h2>Your ID:{username}</h2>
+                    <h1>Live Chat:</h1>
+                    <div className="messages-container">
+                        <Scrollbars style={{height: 300}}>
+                            <ListGroup variant="flush" >
+                                {chat.map((m ,i) => {
+                                    if(m.includes(username)) {
+                                        return (
+                                            <ListGroup.Item className="message-item my-message" key={i}>
+                                                <Form.Label>
+                                                    {m}
+                                                </Form.Label>
+                                            </ListGroup.Item>
+                                        )
+                                    } else {
+                                        return (
+                                            <ListGroup.Item className="message-item received-message" key={i}>
+                                                <Form.Label>
+                                                    {m}
+                                                </Form.Label>
+                                            </ListGroup.Item>
+                                        )
+                                    }
+                                }).reverse()}
+                            </ListGroup>
+                        </Scrollbars>
+                    </div>
+                    <p>Message Count: {chat.length}</p>
+                    <Form.Control placeholder="Type a message" type="text" name="name" value={message}
+                                  onChange={e => setMessage(e.target.value)}
+                                  onKeyPress={handleKeyPress}
+                    />
+                    <Button onClick={handleSend} variant="dark" block>Send</Button>
+                </Col>
             </Jumbotron>
         </div>
     )

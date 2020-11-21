@@ -5,6 +5,7 @@ export const getRooms = () => {
 }
 
 export const addRoom = (roomToBeAdded) => {
+    console.log(roomToBeAdded);
     return dbService.post("/rockpaperscissor/addRoom", roomToBeAdded);
 }
 

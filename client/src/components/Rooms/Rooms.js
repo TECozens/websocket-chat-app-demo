@@ -26,7 +26,7 @@ const Rooms = ({id}) => {
     }, [])
 
     // NOTE Store Room
-    const [joinedRoom, setJoinedRoom] = useState("")
+    const [joinedRoom, setJoinedRoom] = useState([])
     
     // NOTE Update ComponentDidMount
     const [joined, setJoined] = useState(false)
@@ -38,7 +38,7 @@ const Rooms = ({id}) => {
                     <Button block variant="outline-danger" 
                     onClick={() => 
                     {
-                        setJoinedRoom("")
+                        setJoinedRoom([])
                         setJoined(false)
                         window.location.reload(false);
                     }}
