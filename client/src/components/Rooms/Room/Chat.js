@@ -1,10 +1,13 @@
 import React, {useEffect, useState} from "react";
 
+
 const useChat = (roomElement, socket, username) => {
     const [messages, setMessages] = useState([]);
 
     useEffect(() => {
+
         socket.on("chatMessage", (message) => {
+            
             const incomingMessage = {
                 ...message,
                 ownedByCurrentUser: message.senderId === username,
@@ -18,6 +21,8 @@ const useChat = (roomElement, socket, username) => {
     }, [roomElement]);
 
     const sendMessage = (messageBody) => {
+        
+
         socket.emit("chatMessage", {
             body: messageBody,
             senderId: username,

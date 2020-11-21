@@ -1,4 +1,5 @@
 import io from 'socket.io-client';
+import React from "react";
 let socket;
 
 export const initiateSocket = (username ,room) => {
@@ -7,6 +8,12 @@ export const initiateSocket = (username ,room) => {
     if (socket && room) {
         socket.emit('joinRoom', ({username, room}));
     }
+}
+
+export const getRoomUsers  = (cb) => {
+    socket.on('roomUsers', ({users}) => {
+        return cb(users)
+    });
 }
 
 export const disconnectSocket = () => {

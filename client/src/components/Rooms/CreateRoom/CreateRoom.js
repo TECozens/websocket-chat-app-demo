@@ -1,26 +1,26 @@
-import React, { useRef, useState } from 'react'
+import React, { useState } from 'react'
 import { Button, Form, Modal } from 'react-bootstrap'
 import {addRoom} from '../../../service/roomService'
 
 const CreateRoom = () => {
     const [showNewroom, setShowNewRoom] = useState(false);
+    const [text, setText] = useState("")
     const handleClose = () => setShowNewRoom(false);
     const handleShow = () => setShowNewRoom(true);
 
-    const nameRef = useRef()
 
     const newRoom = () => {
-        const roomName = nameRef.current.value
+        const roomName = text
 
         addRoom({
                 room: roomName
         })
-            .then(res => {
-                console.log(res)
-            })
-            .then(err => {
-                console.log(err)
-            })
+        .then(response => {
+            console.log(response);
+        }).catch(error => {
+            console.log(error);
+        })
+
         handleClose()
     }
 
@@ -38,7 +38,7 @@ const CreateRoom = () => {
                     <Form.Group>
                         <Modal.Body>
                             Enter the name of this new Room
-                            <Form.Control type="text" placeholder="Room Name" ref={nameRef} required/>          
+                            <Form.Control type="text" placeholder="Room Name" onChange={e => setText(e.target.value)} required/>          
                         </Modal.Body>
 
                         <Modal.Footer>
