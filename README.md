@@ -28,20 +28,89 @@ This App uses React: [React documentation](https://reactjs.org/).
 ### Compatibility
 #### Browsers
 **Does not work with some Adblockers on Firefox**\
-**Firefox May Block API Calls Axios**\
+**Firefox May Block Axios Requests to Server, such that adding "New Rooms" is not possible**\
 Works In Chrome\
 Works In Edge\
-Works In Opera\
+Works In Opera
     
 #### Socket and API
 **Above Version 2.3.0 Socket produces Cors Errors**\
-**Unhandled Cors causes many Errors as well for Axios**\
+**Unhandled Cors causes many Errors as well for Axios**
 
 
-## Tech Stack
+
+
+# Rationale:
+### MERN Stack
 As a base this app has been initialised with `npx create-react-app` which provided the boilerplate for this application.
+Much of the code is driven by the React, and a Websocket Frontend providing access to backend API's and Data. 
+MongoDB is used to store relevant data like the chat rooms users create and persists them in models which mongoose handles.
+Express then routes between the client and server allowing me to fetch the list of rooms and map them
+into room components so that users who join those rooms can interact using WebSocket. 
 
-## Justification
+### Frontend
+##### React.js
+The Realtime Chat App Application uses React.js as this was specified in the brief however I am also aware of other
+paradigms including Vue.js which is another widely available javascript framework. The project is initialised 
+by `create-react-app`, for rapid
+prototyping including some base dependencies which are required to develop using React. 
+I utilised some component packages from npm like `react-bootstrap` to quickly configure my component layouts 
+and imported some of my own css classnames for position and styling.
+`bootsrap` is an extension of the former, `bootstrap.css` it houses a variety of components and modules 
+which can be slotted into an application like building blocks.
+
+For some purposes like styling it is not necessary to use the default styled components which is why
+ I implemented my own CSS to conditionally render specific styles and 
+position the elements I wanted within the chat component, or the list of rooms component.
+
+
+
+##### Axios 
+I am using axios to store new rooms into the database and then ordering them back when I want to 
+fetch all the chat rooms. With the data I fetch back from axios I unpack it into a list of room components.
+
+### Backend
+##### Mongoose 
+Using [Mongoose](https://mongoosejs.com/docs/index.html) I can provide a way to unpack axios requests and mantle the data from`request.body`
+into a new model. I do this when adding a room I create a new room from the room model which is
+a required import and connects incoming data with the room schema.
+
+##### Http & Socket.io 
+I store messages in `socket.io` on the server side via a set of helper functions. When a user connects to a room socket 
+provides a new connection and joins the user to that room on the server. It then listens for and displays new messages
+passed from other clients to the server within the specified room.
+
+### Persistence
+##### React Use Hooks
+Using Custom React Hooks I have implemented the use of Local Storage from within the browser 
+For persistence I have used a custom hook which can store the userId as a generated ID or Nickname which is stored 
+locally similar to a phone number however for user inputted IDs not validated meaning users can have whatever 
+name they input.
+
+##### MongoDB
+In addition to Mongoose is MongoDB which provides the database and context for Mongoose to connect to. I am using A
+cloud-based database via the Atlas Cluster which is freely available to developers and has payment options for large
+scaled projects.
+
+### Paradigms
+##### JavaScript, ES6, React Hooks
+React is a great framework for producing single page apps with many functional components which focus more on
+show and tell which is a great aspect of the javascript paradigm. There are many features from EcmaScript 6 which
+make producing functions and components much simpler. The syntax itself can be difficult making it a hindrance to learn
+how to structure the code. A feature separate to JavaScript is react hooks within the [React.js] library, hooks help
+to convert most classes to functional components with less code and readability. An added benefit of this is that 
+it reflects the separation of concerns.
+
+In some instances refreshing is unavoidable, when you create a new room you have to refresh the list of rooms 
+to see the newly added room across multiple browsers or on first load.
+
+### Testing
+##### Jest
+There is no test coverage for this application due to the constraints of learning new software paradigms.
+Adding test coverage for the whole application would produce cleaner code in production as well
+ as fix some deployment bugs.
+
+
 
 
 ## Libraries used:
@@ -71,7 +140,7 @@ Socket for Server side
 Restart Development Server
 
 #### `express`
-Manage Requests
+Manage Requests and Routing for the client, server and database operations across http at realtime.
 
 #### `mongoose`
 Database modelling and schema for MongoDB
@@ -88,3 +157,6 @@ Parsing data
 ### root:
 #### `axios`
 Handle requests between the server and client-side
+
+## License
+[MIT License]
