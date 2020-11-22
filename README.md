@@ -99,19 +99,29 @@ their user id will remain.
 ##### MongoDB
 In addition to Mongoose is MongoDB which provides the database and context for Mongoose to connect to. I am using A
 cloud-based database via the Atlas Cluster which is freely available to developers and has payment options for large
-scaled projects.
+scaled projects. MongoDB is a NoSQL language and as a paradigm it is easy to visualise data into objects which can be
+used. 
 
 ### Paradigms
-##### JavaScript, ES6, React Hooks
+##### JavaScript, ES6, React Hooks, Http, Express
 React is a great framework for producing single page apps with many functional components which focus more on
 show and tell which is a great aspect of the javascript paradigm. There are many features from EcmaScript 6 which
 make producing functions and components much simpler. The syntax itself can be difficult making it a hindrance to learn
 how to structure the code. A feature separate to JavaScript is react hooks within the [React.js] library, hooks help
 to convert most classes to functional components with less code and readability. An added benefit of this is that 
 it reflects the separation of concerns.
-
 In some instances refreshing is unavoidable, when you create a new room you have to refresh the list of rooms 
-to see the newly added room across multiple browsers or on first load.
+to see the newly added room across multiple browsers or on first load. On another note of Importance [ExpressJs] requires
+some knowledge of http transactions.[Anatomy of Http](https://nodejs.org/en/docs/guides/anatomy-of-an-http-transaction/)
+I applied some of these principles when producing my application within the node server.js file.
+##### Snippets:
+1.[Toolbar Component, ReactJs, Bootstrap and hooks](https://git.cardiff.ac.uk/c1843439/realtime-chat-app/-/snippets/18)
+
+2.[Axios, Express to Mongo](https://git.cardiff.ac.uk/c1843439/realtime-chat-app/-/snippets/17)
+
+3.[Socket Helper Functions](https://git.cardiff.ac.uk/c1843439/realtime-chat-app/-/snippets/16)
+
+4.[Message Formatting Function, Moment returns Message Object](https://git.cardiff.ac.uk/c1843439/realtime-chat-app/-/snippets/15)
 
 ### Testing
 ##### Jest
@@ -126,46 +136,49 @@ Adding test coverage for the whole application would produce cleaner code in pro
 This application implements a number of libraries when tool chaining.
 ### client:
 #### `use-sound`
-As with any chat application sound is a major indication of interactivity
+As with any chat application sound is a major indication of interactivity which is why I have 
+implemented a library which has a built in set of tools for playing sound within the app [use sound](https://www.npmjs.com/package/use-sound)
 
 #### `react-bootstrap`
 A well-rounded library of visual and functional components to quickly put together an application which looks\
-professional and maintainable.
+professional and maintainable. [React BootStrap](https://react-bootstrap.github.io/)
 
 #### `socket.io-client`
-Socket for client side 
+Socket for client side, use with hooks to listen and update virtual dom with newly emitted messages from server.
 
 #### `uuid`
-To generate ID's
+To generate secure IDs for users I have included this library as a function of the landing page [UUIDv4](https://www.npmjs.com/package/uuidv4)
 
 #### `react-use`
-Extra hooks
+I made use of this library to avoid coding my own useLocalStorage hook as it would have been unnecessary [React Use Hooks](https://www.npmjs.com/package/react-use)
 
 ### server:
 #### `socket.io`
 Socket for Server side
 
 #### `nodemon`
-Restart Development Server
+Restart Development Server [Nodemon, Node Server Watcher](https://nodemon.io/)
 
 #### `express`
-Manage Requests and Routing for the client, server and database operations across http at realtime.
+Manage Requests and Routing for the client, server and database operations across http at realtime for backend 
+operations. [ExpressJs](https://expressjs.com/)
 
 #### `mongoose`
-Database modelling and schema for MongoDB
+Database modelling and schema for MongoDB[MongooseJs](https://mongoosejs.com/docs/)
+
 
 #### `mongodb`
 Mongo Connector
 
 #### `moment`
-Timestamp
+Used to format user messages to locale time [MomentJs](https://momentjs.com/)
 
 #### `body-parser`
-Parsing data
+Parsing data can fail, this functions as an express middleware [Body Parser Middleware](https://www.npmjs.com/package/body-parser)
 
 ### root:
 #### `axios`
-Handle requests between the server and client-side
+Handle promises between the server and client-side [Axios](https://github.com/axios/axios)
 
 ## License
 [MIT License]

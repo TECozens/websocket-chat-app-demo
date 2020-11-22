@@ -1,5 +1,4 @@
 const users = [];
-const answers = []
 
 // Join user to chat
 function userJoin(id, username, room) {
