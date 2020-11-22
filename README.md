@@ -3,22 +3,22 @@ Summary:\
 A Realtime Chat Application produced with React.js and delivers jsx to the client. It is deployed on a node server which implements MongoDB's "Atlas Database Cluster"\.
 Additionally, this project was bootstrapped with [Create React App || CRA](https://github.com/facebook/create-react-app).
 
-#Setup Instructions:
-###1 | Install Dependencies
+# Setup Instructions:
+### 1 | Install Dependencies
 #### `npm install`
 In order to deploy this app you must install dependencies in all 3 directories:\
 **Project Root**\
 **Client**\
 **Server**
 
-###2 | Run the App
+### 2 | Run the App
 #### `cd client | "Followed by" | npm run start`
 **It is required to visit the page itself**\
 Runs the app in the development mode.\
 Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
 The page will reload if you make edits.\
 You will also see any errors in the console.
-###3 | Run the Server
+### 3 | Run the Server
 #### `cd server | "Followed by" | npm run dev`
 **It is required to allow the application to transmit server side requests.**
 
@@ -26,22 +26,22 @@ You will also see any errors in the console.
 This App uses React: [React documentation](https://reactjs.org/).
 
 ### Compatibility
-####Browsers
+#### Browsers
 **Does not work with some Adblockers on Firefox**\
 **Firefox May Block API Calls Axios**\
 Works In Chrome\
 Works In Edge\
 Works In Opera\
     
-####Socket and API
+#### Socket and API
 **Above Version 2.3.0 Socket produces Cors Errors**\
 **Unhandled Cors causes many Errors as well for Axios**\
 
 
-##Tech Stack
+## Tech Stack
 As a base this app has been initialised with `npx create-react-app` which provided the boilerplate for this application.
 
-##Justification
+## Justification
 
 
 ## Libraries used:
