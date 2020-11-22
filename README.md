@@ -47,6 +47,9 @@ Much of the code is driven by the React, and a Websocket Frontend providing acce
 MongoDB is used to store relevant data like the chat rooms users create and persists them in models which mongoose handles.
 Express then routes between the client and server allowing me to fetch the list of rooms and map them
 into room components so that users who join those rooms can interact using WebSocket. 
+A brief description of the tool chain is that when a user makes a room an ajax request is made to save the data from the
+request body, and it is then saved into a room model. After which the users browser will refresh and display the room 
+they have made in real time.
 
 ### Frontend
 ##### React.js
@@ -67,7 +70,10 @@ position the elements I wanted within the chat component, or the list of rooms c
 
 ##### Axios 
 I am using axios to store new rooms into the database and then ordering them back when I want to 
-fetch all the chat rooms. With the data I fetch back from axios I unpack it into a list of room components.
+fetch all the chat rooms. With the data I fetch back from axios I unpack it into a list of room components 
+to then display all rooms from the server. Ajax requests handle a bulk of the work as imported functions and can be
+re-used anywhere in code.
+
 
 ### Backend
 ##### Mongoose 
@@ -83,9 +89,12 @@ passed from other clients to the server within the specified room.
 ### Persistence
 ##### React Use Hooks
 Using Custom React Hooks I have implemented the use of Local Storage from within the browser 
-For persistence I have used a custom hook which can store the userId as a generated ID or Nickname which is stored 
-locally similar to a phone number however for user inputted IDs not validated meaning users can have whatever 
-name they input.
+for persistence I have used a custom hook which can store the userId as a generated ID or Nickname which is stored 
+locally similar to a phone number however for user inputted IDs they're not validated meaning users can have whatever 
+name they input. Anything more than that would require complex persistence using mongoDB so to keep things simple within
+the timeframe of the MVP I decided to store names locally. As long as the user cache is not reset
+ or they are on an incognito tab
+their user id will remain.
 
 ##### MongoDB
 In addition to Mongoose is MongoDB which provides the database and context for Mongoose to connect to. I am using A
